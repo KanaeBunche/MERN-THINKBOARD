@@ -33,7 +33,27 @@ fetchNote()
 const handleDelete = (()=>{})
 
 
- if (loading){
+const handleSave = async () => {
+  if (!note.title.trim() || !note.content.trim()) {
+    toast.error("Please add a title or content");
+    return;
+  }
+
+  setSaving(true);
+
+  try {
+    await api.put(`/notes/${id}`, note);
+    toast.success("Note updated successfully");
+    navigate("/");
+  } catch (error) {
+    console.log("Error saving the note:", error);
+    toast.error("Failed to update note");
+  } finally {
+    setSaving(false);
+  }
+};
+
+if (loading) {
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center">
       <LoaderIcon className="animate-spin size-10" />
@@ -55,6 +75,41 @@ const handleDelete = (()=>{})
             <Trash2Icon className="h-5 w-5" />
             Delete Note
           </button>
+        </div>
+
+        <div className='card bg-base-100'>
+          <div className='card-body'> 
+          <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Title</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Note title"
+                  className="input input-bordered"
+                  value={note.title}
+                  onChange={(e) => setNote({ ...note, title: e.target.value })}
+                />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Content</span>
+                </label>
+                <textarea
+                  placeholder="Write your note here..."
+                  className="textarea textarea-bordered h-32"
+                  value={note.content}
+                  onChange={(e) => setNote({ ...note, content: e.target.value })}
+                />
+              </div>
+
+              <div className="card-actions justify-end">
+                <button className="btn btn-primary" disabled={saving} onClick={handleSave}>
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+          </div>
+
         </div>
         </div>   
 
