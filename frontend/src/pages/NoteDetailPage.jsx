@@ -49,7 +49,7 @@ const handleSave = async () => {
     console.log("Error saving the note:", error);
     toast.error("Failed to update note");
   } finally {
-    setSaving(true);
+    setSaving(false);
   }
 };
 
